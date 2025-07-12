@@ -1,0 +1,258 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/ihealth-nextjs/app/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+// NextAuth models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Health profile data
+  dateOfBirth   DateTime?
+  height        Float? // in cm
+  weight        Float? // in kg
+  activityLevel String? // sedentary, lightly_active, moderately_active, very_active
+  healthGoals   String[] // weight_loss, muscle_gain, better_sleep, etc.
+
+  // Oura Ring integration
+  ouraAccessToken    String?
+  ouraRefreshToken   String?
+  ouraTokenExpiry    DateTime?
+  ouraConnectedAt    DateTime?
+
+  accounts         Account[]
+  sessions         Session[]
+  healthRecords    HealthRecord[]
+  workouts         Workout[]
+  sleepData        SleepData[]
+  activityData     ActivityData[]
+  ouraData         OuraData[]
+  chatConversations ChatConversation[]
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Health data models
+model HealthRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime
+  steps     Int?
+  calories  Float?
+  distance  Float? // in kilometers
+  heartRate Int? // average BPM
+  weight    Float? // in kg
+  bloodPressureSystolic  Int?
+  bloodPressureDiastolic Int?
+  restingHeartRate       Int?
+  bodyFatPercentage      Float?
+  bmi                    Float?
+  source    String   @default("manual") // manual, apple_health, oura
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@map("health_records")
+}
+
+model Workout {
+  id           String   @id @default(cuid())
+  userId       String
+  date         DateTime
+  type         String // running, cycling, swimming, strength_training, etc.
+  duration     Int // in minutes
+  calories     Float?
+  distance     Float? // in kilometers
+  averageHeartRate Int?
+  maxHeartRate     Int?
+  notes        String?
+  source       String @default("manual") // manual, apple_health
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@map("workouts")
+}
+
+model SleepData {
+  id               String   @id @default(cuid())
+  userId           String
+  date             DateTime // sleep date (night of)
+  bedtime          DateTime?
+  sleepStart       DateTime?
+  sleepEnd         DateTime?
+  wakeTime         DateTime?
+  totalSleep       Int? // in minutes
+  deepSleep        Int? // in minutes
+  lightSleep       Int? // in minutes
+  remSleep         Int? // in minutes
+  awakeTime        Int? // in minutes
+  sleepEfficiency  Float? // percentage
+  sleepScore       Int? // 0-100
+  restfulness      Float? // 0-1
+  source           String @default("manual") // manual, apple_health, oura
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@map("sleep_data")
+}
+
+model ActivityData {
+  id                  String   @id @default(cuid())
+  userId              String
+  date                DateTime
+  steps               Int?
+  calories            Float?
+  activeCalories      Float?
+  distance            Float? // in kilometers
+  floors              Int?
+  activeMinutes       Int?
+  sedentaryMinutes    Int?
+  averageHeartRate    Int?
+  maxHeartRate        Int?
+  minHeartRate        Int?
+  activityScore       Int? // 0-100
+  source              String @default("manual") // manual, apple_health, oura
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@map("activity_data")
+}
+
+// Oura Ring specific data
+model OuraData {
+  id               String   @id @default(cuid())
+  userId           String
+  date             DateTime
+  dataType         String // sleep, activity, readiness
+  
+  // Sleep data from Oura
+  sleepScore       Int?
+  sleepTotal       Int? // seconds
+  sleepDeep        Int? // seconds
+  sleepLight       Int? // seconds
+  sleepRem         Int? // seconds
+  sleepAwake       Int? // seconds
+  sleepEfficiency  Int? // percentage
+  sleepOnset       Int? // minutes to fall asleep
+  sleepMidpoint    String? // time string
+  sleepLatency     Int? // minutes
+  
+  // Activity data from Oura
+  activityScore    Int?
+  stepsTotal       Int?
+  caloriesTotal    Float?
+  caloriesActive   Float?
+  metMinutes       Int?
+  targetCalories   Float?
+  targetKm         Float?
+  
+  // Readiness data from Oura
+  readinessScore          Int?
+  temperatureBodyHigh     Float?
+  temperatureDeviation    Float?
+  activityBalance         Int?
+  bodyBattery             Int?
+  hrv                     Float?
+  hrvBalance              Int?
+  recoveryIndex           Int?
+  restingHeartRate        Int?
+  sleepBalance            Int?
+  
+  // Raw Oura response data
+  rawData          Json?
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date, dataType])
+  @@map("oura_data")
+}
+
+// AI Chat functionality
+model ChatConversation {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages ChatMessage[]
+
+  @@index([userId])
+  @@map("chat_conversations")
+}
+
+model ChatMessage {
+  id             String   @id @default(cuid())
+  conversationId String
+  role           String // user, assistant
+  content        String   @db.Text
+  createdAt      DateTime @default(now())
+
+  conversation ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@map("chat_messages")
+}
