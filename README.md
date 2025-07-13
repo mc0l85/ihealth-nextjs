@@ -1,419 +1,251 @@
-# iHealth - Personal Health Tracking Dashboard
+# iHealth NextJS - Personal Health Tracking Platform
 
-A modern, comprehensive health tracking application built with NextJS that helps you monitor your wellness journey through data visualization, AI insights, and device integrations.
+A comprehensive health tracking application built with Next.js, featuring AI-powered insights, Oura Ring integration, and detailed health analytics.
 
-![iHealth Dashboard](https://lh3.googleusercontent.com/QpUVkhodlLmKRTJzZklmWxqJEINbuLmD2526HXUA-_d6aLm7gh6WrW2bMe3pmrjG44Xf=h900)
-
-## 🌟 Features
-
-### ✅ Currently Implemented
-- **User Authentication**: Secure login/signup with session management
-- **Health Dashboard**: Interactive overview with key metrics and trends
-- **Data Visualization**: Beautiful charts for steps, sleep, calories, and more
-- **Health Metrics Tracking**: Steps, calories, distance, heart rate, sleep data
-- **Workout Tracking**: Exercise logging and progress monitoring
-- **Sleep Analysis**: Sleep quality scoring and pattern analysis
-- **AI Chat Interface**: Health insights powered by LLM (UI ready)
-- **Data Import System**: Apple Health and Oura Ring integration (UI ready)
-- **Responsive Design**: Works seamlessly on mobile, tablet, and desktop
-- **Real-time Data**: Live dashboard updates with sample data
-
-### 🚧 Coming Soon
-- Apple Health XML file processing and import
-- Oura Ring API live data sync
-- Streaming AI chat responses with health insights
-- Advanced analytics and trend predictions
-- Health goal setting and progress tracking
-- Data export and sharing features
-
-## 🛠️ Technology Stack
-
-- **Frontend**: NextJS 14, React 18, TypeScript
-- **Styling**: Tailwind CSS, Framer Motion for animations
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: NextAuth.js with JWT sessions
-- **Charts**: Recharts for data visualization
-- **UI Components**: Radix UI primitives
-- **AI Integration**: AbacusAI LLM API for health insights
-
-## 📋 Prerequisites
-
-This guide assumes you're using **Ubuntu 24.04** and are new to web development. We'll walk through every step.
-
-## 🚀 Installation Guide for Ubuntu 24.04
-
-### Step 1: Update Your System
-
-First, let's make sure your Ubuntu system is up to date:
-
-```bash
-sudo apt update && sudo apt upgrade -y
-```
-
-### Step 2: Install Node.js and npm
-
-We need Node.js version 18 or higher:
-
-```bash
-# Install Node.js 20 (recommended)
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-# Verify installation
-node --version  # Should show v20.x.x
-npm --version   # Should show 10.x.x or higher
-```
-
-### Step 3: Install Yarn Package Manager
-
-Yarn is faster and more reliable than npm:
-
-```bash
-# Install Yarn globally
-npm install -g yarn
-
-# Verify installation
-yarn --version  # Should show 1.x.x or higher
-```
-
-### Step 4: Install Git
-
-Git is needed to clone the repository:
-
-```bash
-sudo apt install git -y
-
-# Verify installation
-git --version
-```
-
-### Step 5: Install PostgreSQL
-
-We need PostgreSQL for our database:
-
-```bash
-# Install PostgreSQL and additional tools
-sudo apt install postgresql postgresql-contrib -y
-
-# Start PostgreSQL service
-sudo systemctl start postgresql
-sudo systemctl enable postgresql
-
-# Create a database user
-sudo -u postgres createuser --interactive
-# When prompted:
-# - Enter name of role: your_username
-# - Shall the new role be a superuser? y
-
-# Create a database
-sudo -u postgres createdb ihealth_db
-
-# Set password for your user
-sudo -u postgres psql
-\password your_username
-\q
-```
-
-### Step 6: Clone and Setup the Project
+## 🚀 Quick Start
 
 ```bash
 # Clone the repository
 git clone https://github.com/mc0l85/ihealth-nextjs.git
 cd ihealth-nextjs/app
 
-# Install dependencies
-yarn install
+# Run automated setup
+npm run setup
 
-# Copy environment variables template
-cp .env.example .env
-
-# Edit environment variables
-nano .env
+# Start development server
+npm run dev
 ```
 
-### Step 7: Configure Environment Variables
+Visit [http://localhost:3000](http://localhost:3000) and log in with:
+- **Email:** demo@ihealth.com  
+- **Password:** demo123
 
-Edit the `.env` file with your settings:
+## ✨ Features
+
+- 📊 **Health Data Tracking** - Monitor steps, calories, heart rate, weight, and more
+- 💪 **Workout Logging** - Track exercises with detailed metrics
+- 😴 **Sleep Analysis** - Comprehensive sleep quality monitoring
+- 🔗 **Oura Ring Integration** - Sync data from your Oura Ring
+- 🤖 **AI Health Insights** - Get personalized recommendations
+- 📱 **Responsive Design** - Works on desktop, tablet, and mobile
+- 🔐 **Secure Authentication** - NextAuth.js with multiple providers
+- 📈 **Data Visualization** - Beautiful charts and graphs
+- 💬 **AI Chat Assistant** - Ask questions about your health data
+
+## 🛠️ Tech Stack
+
+- **Frontend:** Next.js 14, React 18, TypeScript
+- **Styling:** Tailwind CSS, Radix UI, Framer Motion
+- **Database:** PostgreSQL with Prisma ORM
+- **Authentication:** NextAuth.js
+- **Charts:** Chart.js, Recharts, Plotly.js
+- **AI:** OpenAI API integration
+- **Deployment:** Vercel-ready
+
+## 📋 Prerequisites
+
+- Node.js 18 or higher
+- PostgreSQL database
+- Git
+
+## 🔧 Installation
+
+### Automated Setup (Recommended)
 
 ```bash
-# Database URL - Update with your credentials
-DATABASE_URL="postgresql://your_username:your_password@localhost:5432/ihealth_db"
-
-# NextAuth Configuration
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key-here"
-
-# AI Chat API (AbacusAI)
-ABACUSAI_API_KEY="your-api-key-here"
+git clone https://github.com/mc0l85/ihealth-nextjs.git
+cd ihealth-nextjs/app
+npm run setup
 ```
 
-**Generate a secure secret:**
-```bash
-openssl rand -base64 32
-```
+### Manual Setup
 
-### Step 8: Setup Database
+1. **Clone and install dependencies**
+   ```bash
+   git clone https://github.com/mc0l85/ihealth-nextjs.git
+   cd ihealth-nextjs/app
+   npm install
+   ```
 
-```bash
-# Generate Prisma client
-npx prisma generate
+2. **Set up environment variables**
+   ```bash
+   cp .env.local.example .env.local
+   ```
+   
+   Edit `.env.local` with your values:
+   ```env
+   DATABASE_URL="postgresql://username:password@localhost:5432/ihealth_db"
+   NEXTAUTH_URL="http://localhost:3000"
+   NEXTAUTH_SECRET="your-secret-key-here"
+   OPENAI_API_KEY="your-openai-api-key"
+   ```
 
-# Push schema to database
-npx prisma db push
+3. **Set up database**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   npm run seed
+   ```
 
-# Seed database with sample data
-npx prisma db seed
-```
+4. **Start development server**
+   ```bash
+   npm run dev
+   ```
 
-### Step 9: Start Development Server
+## 📜 Available Scripts
 
-```bash
-yarn dev
-```
-
-Your application will be available at `http://localhost:3000`
-
-## 👤 Test Account
-
-Use these credentials to test the application:
-- **Email**: john@doe.com
-- **Password**: johndoe123
-
-## 📱 Usage
-
-### Dashboard Overview
-1. **Sign in** with your credentials
-2. **View metrics** - See your daily steps, calories, sleep, and heart rate
-3. **Analyze trends** - Compare today's data with weekly averages
-4. **Review workouts** - Check your recent exercise activities
-5. **Track sleep** - Monitor sleep quality and duration
-
-### Navigation
-- **Dashboard**: Main health overview with key metrics
-- **Sleep**: Detailed sleep analysis and patterns
-- **Workouts**: Exercise tracking and progress
-- **Chat**: AI-powered health insights (coming soon)
-- **Import**: Data import from Apple Health and Oura Ring
-
-### Adding Data
-Currently, the app uses sample data. Future versions will support:
-- Manual data entry
-- Apple Health XML import
-- Oura Ring API sync
-- Other fitness device integrations
-
-## 🔧 Development
-
-### Project Structure
-```
-ihealth-nextjs/app/
-├── app/                    # NextJS app directory
-│   ├── api/               # API routes
-│   ├── auth/              # Authentication pages
-│   ├── dashboard/         # Dashboard pages
-│   └── globals.css        # Global styles
-├── components/            # React components
-│   ├── dashboard/         # Dashboard-specific components
-│   └── ui/               # Reusable UI components
-├── lib/                  # Utility functions
-├── prisma/               # Database schema and migrations
-└── types/                # TypeScript type definitions
-```
-
-### Available Scripts
-
-```bash
-# Development
-yarn dev          # Start development server
-yarn build        # Build for production
-yarn start        # Start production server
-
-# Database
-npx prisma studio        # Open database browser
-npx prisma db push       # Push schema changes
-npx prisma db seed       # Seed sample data
-npx prisma generate      # Generate Prisma client
-
-# Testing
-yarn lint         # Run ESLint
-yarn type-check   # Check TypeScript types
-```
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run setup` | Complete development setup |
+| `npm run seed` | Seed database with demo data |
+| `npm run reset-db` | Reset database (delete all data) |
+| `npm run migrate` | Run database migrations |
+| `npm run db:push` | Push Prisma schema to database |
+| `npm run db:studio` | Open Prisma Studio |
+| `npm run generate` | Generate Prisma client |
 
 ## 🗄️ Database Schema
 
-The application uses a comprehensive health data schema:
+### Core Models
 
-- **Users**: Profile and authentication
-- **HealthRecords**: Daily health metrics
-- **Workouts**: Exercise activities
-- **SleepData**: Sleep tracking information
-- **ActivityData**: Daily activity summaries
-- **OuraData**: Oura Ring specific metrics
-- **ChatConversations**: AI chat history
+- **User** - User accounts, profiles, and health goals
+- **HealthRecord** - Daily health metrics (steps, calories, heart rate, etc.)
+- **Workout** - Exercise sessions with detailed tracking
+- **SleepData** - Sleep quality and duration metrics
+- **ActivityData** - Daily activity summaries
+- **OuraData** - Oura Ring integration data
+- **ChatConversation/ChatMessage** - AI chat functionality
 
-## 🔌 API Integration
+### Key Features
 
-### Health Data APIs
-- **Apple Health**: XML export processing
-- **Oura Ring**: REST API for sleep/activity data
-- **Manual Entry**: Form-based data input
+- Comprehensive health data tracking
+- Oura Ring API integration
+- AI-powered chat system
+- Secure user authentication
+- Data visualization ready
 
-### AI Chat Integration
-- **LLM Provider**: AbacusAI for health insights
-- **Streaming**: Real-time response streaming
-- **Context**: Health data-aware conversations
+## 🔗 Integrations
 
-## 🎨 Customization
+### Oura Ring
+Connect your Oura Ring to automatically sync:
+- Sleep data (duration, efficiency, stages)
+- Activity data (steps, calories, heart rate)
+- Readiness scores and recovery metrics
 
-### Themes
-The app uses a health-focused color palette:
-- **Primary**: Blue (#60B5FF) - Trust and technology
-- **Secondary**: Green (#10B981) - Health and growth
-- **Accent**: Purple (#8B5CF6) - Sleep and recovery
+### OpenAI
+AI-powered features include:
+- Personalized health insights
+- Chat-based data analysis
+- Trend identification
+- Goal recommendations
 
-### Adding New Metrics
-1. Update Prisma schema in `prisma/schema.prisma`
-2. Create migration: `npx prisma db push`
-3. Add UI components in `components/dashboard/`
-4. Update API routes in `app/api/`
+## 🎨 UI Components
 
-## 🚨 Troubleshooting
+Built with modern, accessible components:
+- Radix UI primitives
+- Custom Tailwind CSS styling
+- Framer Motion animations
+- Responsive design patterns
+- Dark/light mode support
 
-### Common Issues
+## 📊 Data Visualization
 
-#### Database Connection Error
-```bash
-# Check PostgreSQL is running
-sudo systemctl status postgresql
+Multiple chart types for health data:
+- Line charts for trends
+- Bar charts for comparisons
+- Pie charts for distributions
+- Interactive Plotly.js charts
+- Real-time data updates
 
-# Restart if needed
-sudo systemctl restart postgresql
+## 🔐 Security
 
-# Check database exists
-sudo -u postgres psql -l
-```
-
-#### Node Version Issues
-```bash
-# Check Node version
-node --version
-
-# Update if needed (should be 18+)
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y nodejs
-```
-
-#### Port Already in Use
-```bash
-# Kill process on port 3000
-sudo lsof -ti:3000 | xargs kill -9
-
-# Or use different port
-PORT=3001 yarn dev
-```
-
-#### Prisma Issues
-```bash
-# Reset database (WARNING: deletes all data)
-npx prisma migrate reset
-
-# Regenerate client
-npx prisma generate
-```
-
-### Environment Setup Issues
-
-#### Missing Dependencies
-```bash
-# Reinstall node_modules
-rm -rf node_modules yarn.lock
-yarn install
-```
-
-#### Permission Issues
-```bash
-# Fix npm permissions
-sudo chown -R $(whoami) ~/.npm
-sudo chown -R $(whoami) /usr/local/lib/node_modules
-```
-
-## 📊 Performance
-
-### Optimization Features
-- **Server-side rendering** for fast initial loads
-- **Static generation** for auth pages
-- **Image optimization** with Next.js Image component
-- **Code splitting** for efficient bundle sizes
-- **Caching** for API responses
-
-### Monitoring
-- Built-in performance monitoring
-- Error boundary components
-- Console logging for debugging
-
-## 🔒 Security
-
-### Authentication
-- **JWT tokens** for session management
-- **Password hashing** with bcryptjs
-- **CSRF protection** via NextAuth.js
-- **Secure headers** in production
-
-### Data Protection
-- **Environment variables** for sensitive data
-- **Database encryption** for passwords
-- **API rate limiting** (recommended for production)
-- **Input validation** on all forms
+- NextAuth.js authentication
+- Secure password hashing (bcrypt)
+- JWT token management
+- Environment variable protection
+- Database query sanitization
 
 ## 🚀 Deployment
 
-### Production Checklist
-- [ ] Set secure `NEXTAUTH_SECRET`
-- [ ] Configure production database
-- [ ] Set up SSL certificates
-- [ ] Configure domain and DNS
-- [ ] Set up monitoring and logging
-- [ ] Configure backup strategy
+### Vercel (Recommended)
 
-### Recommended Platforms
-- **Vercel**: Optimized for NextJS applications
-- **Railway**: Easy PostgreSQL integration
-- **DigitalOcean**: Full control and customization
-- **AWS**: Enterprise-scale deployment
+1. Push to GitHub
+2. Connect to Vercel
+3. Set environment variables
+4. Deploy automatically
+
+### Docker
+
+```bash
+# Build image
+docker build -t ihealth-nextjs .
+
+# Run container
+docker run -p 3000:3000 ihealth-nextjs
+```
+
+## 🧪 Testing
+
+```bash
+# Run tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+```
+
+## 📱 Mobile Support
+
+- Responsive design for all screen sizes
+- Touch-friendly interface
+- Progressive Web App (PWA) ready
+- Offline data caching
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our contributing guidelines:
-
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📞 Support
+## 📝 License
 
-Need help? Here are your options:
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-1. **Check this README** for common solutions
-2. **GitHub Issues** for bug reports
-3. **Discussions** for questions and ideas
-4. **Email Support** for urgent issues
+## 🆘 Support
 
-## 📄 License
+- 📖 Check the [SETUP.md](SETUP.md) guide
+- 🐛 Report issues on GitHub
+- 💬 Join our community discussions
+- 📧 Contact support
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 🗺️ Roadmap
+
+- [ ] Apple Health integration
+- [ ] Google Fit integration
+- [ ] Advanced AI insights
+- [ ] Social features
+- [ ] Nutrition tracking
+- [ ] Medication reminders
+- [ ] Doctor portal
+- [ ] Export/import data
 
 ## 🙏 Acknowledgments
 
-- **NextJS Team** for the amazing framework
-- **Radix UI** for accessible components
-- **Tailwind CSS** for utility-first styling
-- **Prisma** for type-safe database access
-- **AbacusAI** for LLM integration
+- Next.js team for the amazing framework
+- Prisma for the excellent ORM
+- Radix UI for accessible components
+- Tailwind CSS for utility-first styling
+- OpenAI for AI capabilities
 
 ---
 
-**Built with ❤️ for better health tracking**
-
-Last updated: July 2025
+**Made with ❤️ for better health tracking**
