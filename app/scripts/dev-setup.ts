@@ -1,3 +1,4 @@
+
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import fs from 'fs'
@@ -24,7 +25,7 @@ async function main() {
   try {
     // Install dependencies
     console.log('📦 Installing dependencies...')
-    await execAsync('npm install')
+    await execAsync('npm install --legacy-peer-deps')
     console.log('✅ Dependencies installed')
 
     // Generate Prisma client
